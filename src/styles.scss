@@ -1,1 +1,86 @@
-/* You can add global styles to this file, and also import other style files */
+html, body {
+  height: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Merriweather", serif;
+  background: azure;
+}
+
+.ng-valid.ng-dirty:not([formGroupName]):not([formArrayName]):not([ngModelGroup]):not(form):not(mat-button-toggle-group):not(.standalone-search) {
+  border: 2px solid forestgreen;
+}
+
+.ng-invalid.ng-dirty:not([ngModelGroup="address"]):not([formGroupName="address"]):not([formArrayName]):not(form) {
+  border: 2px solid crimson;
+}
+
+@keyframes input-message-animation {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+@mixin input-message() {
+  font-size: 12px;
+  box-sizing: border-box;
+  padding: 2px 13px;
+  animation-name: input-message-animation;
+  animation-duration: 300ms;
+}
+
+.input-error {
+  @include input-message();
+}
+
+.input-info {
+  @include input-message();
+}
+
+.reactive-wrapper, .template-driven-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .form-field {
+    padding: 0.5rem;
+
+    .input-error {
+      font-size: 12px;
+      color: crimson;
+    }
+
+    .input-info {
+      font-size: 12px;
+      color: dimgray;
+    }
+
+    label {
+      padding-right: 0.5rem;
+    }
+  }
+
+  .skill-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .standalone-form-control, .standalone-ng-model {
+    padding: 1rem;
+
+    .search-result {
+      padding-top: 1rem;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+  }
+}

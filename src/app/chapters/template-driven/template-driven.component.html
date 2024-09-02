@@ -1,0 +1,255 @@
+<div class="template-driven-wrapper">
+  <h1>Template Driven Forms:</h1>
+
+<!--  Using ngSubmit event is better practice in comparison to direct click event on the 'Save' button-->
+<!--  (reset) - default <form> event-->
+<!--  #form - reference to get properties of form directly in template-->
+  <form class="form" (ngSubmit)="onSubmit()" (reset)="onReset($event)" #form='ngForm'>
+
+    <div class="form-field">
+      <label for="name">First Name</label>
+<!--      Basic template-driven from binding with component-->
+<!--      name - name of FormControl-->
+<!--      required and minlength - template-driven way to apply validator-->
+<!--      #firstName - template reference needed to get FormControl's properties to manipulate messages etc.-->
+<!--      appBanWords - custom validator implemented as directive to be used in template-driven-->
+      <input
+        [(ngModel)]="user.firstName"
+        name="first-name"
+        type="text"
+        id="name"
+        placeholder="Enter your name"
+        required
+        minlength="2"
+        #firstName="ngModel"
+        appBanWords="test"
+      >
+<!--      Three different validation error messages depending on trigger-->
+      <div *ngIf="firstName.dirty && firstName.hasError('required')" class="input-error">
+        This field is required
+      </div>
+      <div *ngIf="firstName.dirty && firstName.hasError('minlength')" class="input-error">
+        First name must consist of at least {{ firstName.getError('minlength').requiredLength }} characters
+      </div>
+      <div *ngIf="firstName.dirty && firstName.hasError('appBanWords')" class="input-error">
+        The value <strong>{{ firstName.getError('appBanWords').bannedWord }}</strong> is not allowed
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="last-name">Last Name</label>
+<!--      Same as 'name' field-->
+      <input
+        [(ngModel)]="user.lastName"
+        required
+        minlength="2"
+        #lastName="ngModel"
+        name="last-name"
+        type="text"
+        id="last-name"
+        placeholder="Enter your last name"
+      >
+      <div *ngIf="lastName.dirty && lastName.hasError('required')" class="input-error">
+        This field is required
+      </div>
+      <div *ngIf="lastName.dirty && lastName.hasError('minlength')" class="input-error">
+        This field is too short
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="nickname">Nickname</label>
+<!--      { updateOn: 'blur' } - update ngModel, therefore trigger validator, only on 'blur' event,-->
+<!--      Because in case of async validator, too many triggers may be bad-->
+<!--      [appBanWords] - custom validator implemented as directive, applied with condition-->
+<!--      appUniqueNickname - custom async validator that uses http-->
+      <input
+        [(ngModel)]="user.nickname"
+        [ngModelOptions]="{ updateOn: 'blur' }"
+        required
+        minlength="3"
+        #nickname="ngModel"
+        pattern="^[\w.]+$"
+        name="nickname"
+        type="text"
+        id="nickname"
+        placeholder="Come up with a nickname"
+        [appBanWords]="isAdult ? ['test', 'noob'] : []"
+        appUniqueNickname
+      >
+      <div *ngIf="nickname.dirty && nickname.hasError('required')" class="input-error">
+        This field is required
+      </div>
+      <div *ngIf="nickname.dirty && nickname.hasError('minlength')" class="input-error">
+        This field is too short
+      </div>
+      <div *ngIf="nickname.dirty && nickname.hasError('pattern')" class="input-error">
+        Only letters, numbers, _ and . is allowed
+      </div>
+      <div *ngIf="nickname.dirty && nickname.hasError('appBanWords')" class="input-error">
+        The value <strong>{{ nickname.getError('appBanWords').bannedWord }}</strong> is not allowed
+      </div>
+      <div *ngIf="nickname.dirty && nickname.hasError('appUniqueNickname')" class="input-error">
+        The nickname <strong>{{ nickname.value }}</strong> is taken!
+      </div>
+<!--      Checking 'pending' status of FormControl to show message while http call is being made for async validation-->
+      <div *ngIf="nickname.pending" class="input-info">Checking...</div>
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input
+        [(ngModel)]="user.email"
+        email
+        name="email"
+        #email="ngModel"
+        type="email"
+        id="email"
+        placeholder="Provide your email"
+      >
+      <div *ngIf="email.dirty && email.hasError('required')" class="input-error">
+        This field is required
+      </div>
+      <div *ngIf="email.dirty && email.hasError('email')" class="input-error">
+        This field should be a valid email
+      </div>
+    </div>
+
+    <div class="form-field-inline-group">
+      <div class="form-field form-field--small">
+        <label for="year-of-birth">Year of birth</label>
+        <select required id="year-of-birth" [(ngModel)]="user.yearOfBirth" name="year-of-birth">
+          <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+        </select>
+      </div>
+      <div class="form-field form-field--small">
+        <label for="passport">Passport Number</label>
+<!--        [required] - dynamic validator based on condition-->
+        <input
+          [(ngModel)]="user.passport"
+          pattern="^[A-Z]{2}[0-9]{6}$"
+          [required]="isAdult"
+          #passport="ngModel"
+          name="passport"
+          type="text"
+          id="passport"
+          placeholder="Provide Passport Data"
+        >
+        <div *ngIf="passport.dirty && passport.hasError('pattern')" class="input-error">
+          Invalid passport number
+        </div>
+        <div *ngIf="passport.dirty && passport.hasError('required')" class="input-error">
+          Passport is required for adults
+        </div>
+      </div>
+    </div>
+
+<!--    ngModelGroup - grouping some FormControls into FormGroup for ngForm-->
+    <fieldset ngModelGroup="address">
+      <legend>Address</legend>
+      <div class="form-field">
+        <label for="full-address">Full Address</label>
+        <input
+          [(ngModel)]="user.fullAddress"
+          required
+          #fullAddress="ngModel"
+          name="full-address"
+          type="text"
+          id="full-address"
+          placeholder="Street name and house number"
+        >
+        <div *ngIf="fullAddress.dirty && fullAddress.hasError('required')" class="input-error">
+          This field is required
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="city">City</label>
+        <input
+          [(ngModel)]="user.city"
+          required
+          name="city"
+          #city="ngModel"
+          type="text"
+          id="city"
+          placeholder="City"
+        >
+        <div *ngIf="city.dirty && city.hasError('required')" class="input-error">
+          This field is required
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="post-code">Post Code</label>
+        <input
+          [(ngModel)]="user.postCode"
+          required
+          name="post-code"
+          #postCode="ngModel"
+          type="number"
+          id="post-code"
+          placeholder="Post code"
+        >
+        <div *ngIf="postCode.dirty && postCode.hasError('required')" class="input-error">
+          This field is required
+        </div>
+      </div>
+    </fieldset>
+
+<!--    appPasswordShouldMatch - custom cross-field validator put on ngModelGroup, which is FormGroup -->
+    <fieldset ngModelGroup="password" appPasswordShouldMatch>
+      <legend>User Password</legend>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input
+          [(ngModel)]="user.password"
+          required
+          minlength="6"
+          #password="ngModel"
+          name="password"
+          type="password"
+          id="password"
+          placeholder="Enter user's password"
+        >
+        <div *ngIf="password.dirty && password.hasError('required')" class="input-error">
+          This field is required
+        </div>
+        <div *ngIf="password.dirty && password.hasError('minlength')" class="input-error">
+          Password length should be at least
+<!--          Accessing the property of default 'minlength' validator and get it's value-->
+          <strong>{{password.getError('minlength').requiredLength}}</strong> characters
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="confirm-password">Confirm password</label>
+        <input
+          [(ngModel)]="user.confirmPassword"
+          #confirmPassword="ngModel"
+          name="confirm-password"
+          type="password"
+          id="confirm-password"
+          placeholder="Confirm the password"
+        >
+<!--        Custom validator message-->
+        <div *ngIf="confirmPassword.dirty && confirmPassword.hasError('appPasswordShouldMatch')"
+             class="input-error">Password doesn't match</div>
+      </div>
+    </fieldset>
+
+<!--    Disabled button in case form's status is invalid or pending-->
+<!--    No type defined - so it is a submit type, the event handler is on <form> tag-->
+    <button [disabled]="form.invalid || form.pending">Save</button>
+
+<!--    Reset event is handled on <form> either -->
+    <button class="reset-button" type="reset">Reset</button>
+  </form>
+
+  <br>
+
+  <div class="standalone-form-control">
+<!--    Basic template-driven field w/o form or other fields-->
+    <input type="text" placeholder="Search" class="standalone-search" [(ngModel)]="searchString">
+    <div class="search-result">
+      <label for="search-input">Search value: </label>
+      <div id="search-input">{{ searchString }}</div>
+    </div>
+  </div>
+</div>
