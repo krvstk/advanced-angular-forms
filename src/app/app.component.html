@@ -1,0 +1,39 @@
+<div class="app-wrapper">
+
+  <header class="header-wrapper">
+    <div>
+      <p class="header-heading">Angular 18 app for Advanced Forms course</p>
+    </div>
+
+    <div class="header-buttons-wrapper">
+
+      <mat-button-toggle-group [formControl]="chapter" aria-label="Chapter selected">
+        <mat-button-toggle value="template">Template driven forms</mat-button-toggle>
+        <mat-button-toggle value="reactive">Reactive forms</mat-button-toggle>
+        <mat-button-toggle value="picker">Custom rating picker</mat-button-toggle>
+        <mat-button-toggle value="select">Custom select</mat-button-toggle>
+        <mat-button-toggle value="dynamic">Dynamic forms</mat-button-toggle>
+      </mat-button-toggle-group>
+
+    </div>
+  </header>
+
+  <section class="content-wrapper">
+    <mat-card appearance="outlined">
+
+      <mat-card-content [ngSwitch]="chapter.value">
+
+        <app-template-driven *ngSwitchCase="'template'"></app-template-driven>
+        <app-reactive *ngSwitchCase="'reactive'"></app-reactive>
+        <app-custom-rating-picker *ngSwitchCase="'picker'"></app-custom-rating-picker>
+        <app-custom-select *ngSwitchCase="'select'"></app-custom-select>
+        <app-dynamic *ngSwitchCase="'dynamic'"></app-dynamic>
+
+      </mat-card-content>
+
+    </mat-card>
+  </section>
+
+</div>
+
+
