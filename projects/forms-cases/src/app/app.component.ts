@@ -13,7 +13,7 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {FormsService} from "./utils/forms.service";
 
 @Component({
-  selector: 'app-root',
+  selector: 'forms-root',
   standalone: true,
   imports: [RouterOutlet, MatCard, MatCardContent, TemplateDrivenComponent, NgSwitch, NgSwitchCase, ReactiveComponent, CustomRatingPickerComponent, CustomSelectComponent, DynamicComponent, MatButton, MatButtonToggleGroup, MatButtonToggle, ReactiveFormsModule],
   providers: [FormsService],
@@ -22,5 +22,5 @@ import {FormsService} from "./utils/forms.service";
 })
 export class AppComponent {
   title = 'forms-course-ng-18';
-  chapter: FormControl = new FormControl('template');
+  chapter: FormControl = new FormControl('picker');
 }
